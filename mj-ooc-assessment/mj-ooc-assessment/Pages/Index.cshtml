@@ -1,0 +1,194 @@
+﻿@page
+@{/*
+*	FILE : Index.cshtml
+*	PROJECT : Ontario One Call Challenge
+*	PROGRAMMER : Mark Jackson
+*	FIRST VERSION : 2021-12-29
+*	DESCRIPTION :
+*		This file contains the view of the main window.
+*/}
+@using mj_ooc_challenge.Pages
+
+@model IndexModel
+<!-- this style is used to make the list on the left side of the window operate -->
+<style>
+    ul, #myUL {
+        list-style-type: none;
+    }
+
+    #myUL {
+        margin: 0;
+        padding: 0;
+    }
+
+    .caret {
+        cursor: pointer;
+        -webkit-user-select: none; /* Safari 3.1+ */
+        -moz-user-select: none; /* Firefox 2+ */
+        -ms-user-select: none; /* IE 10+ */
+        user-select: none;
+    }
+
+        .caret::before {
+            content: "\25B6";
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+    .caret-down::before {
+        -ms-transform: rotate(90deg); /* IE 9 */
+        -webkit-transform: rotate(90deg); /* Safari */
+        transform: rotate(90deg);
+    }
+
+    .nested {
+        display: none;
+    }
+
+    .active {
+        display: block;
+    }
+
+    .data_grid table, .data_grid th, .data_grid td {
+        border: 1px solid black;
+    }
+</style>
+
+<script>
+    /*this variable keeps track of which checkboxes are checked*/
+    const checks = [];
+</script>
+
+<!-- the main formatting table -->
+<table width="100%" border="0">
+    <tr>
+        <td width="250px">
+            <img src="https://ontarioonecall.ca/wp-content/uploads/logo.png" alt="ontatio one call logo" height="216.5px" width="250px" />
+        </td>
+        <td align="right" style="word-wrap:anywhere">
+            Current selection: <a id="selection"></a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="overflow-y:scroll;height:500px">
+                <ul id="myUL">
+                @{
+                    /*build the list and attach specific handlers to each checkbox*/
+                    foreach (var branch in Model.codeList) {
+                        <li>
+                            <span class="caret">@branch.master_code</span>
+                            <ul class="nested">
+                                @{
+
+                                    foreach (var modelCode in branch.member_code) {
+                                        <li>
+                                            <input type="checkbox" id="@modelCode" /><a>@modelCode</a>
+                                            <script>
+                                                @{ 
+                                                    var handler = modelCode + "handler";
+                                                }
+                                                var @handler = function() {
+                                                    var cb = document.getElementById("@modelCode");
+                                                    if (cb.checked == true) {
+                                                        checks.push("@modelCode");
+                                                        document.getElementById("selectedOptions").value = checks.toString();
+                                                        document.getElementById("selection").innerHTML = checks.toString();
+                                                    } else {
+                                                        checks.splice(checks.indexOf("@modelCode"), 1);
+                                                        document.getElementById("selectedOptions").value = checks.toString();
+                                                        document.getElementById("selection").innerHTML = checks.toString();
+                                                    }
+                                                }
+                                                //add listener
+                                                document.getElementById("@modelCode").addEventListener('click', @handler, false);
+                                            </script>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                    }
+                }
+            </ul>
+            </div>
+        </td>
+        <td align="right">
+            <table>
+                <tr>
+                    <td>
+                        <table class="data_grid">
+                            <tr>
+                                <td style="background-color:grey">
+                                    Time to Respond
+                                </td>
+                                <td style="background-color:grey">
+                                    Percentage
+                                </td>
+                                <td style="background-color:grey">
+                                    Compliant
+                                </td>
+                                <td style="background-color:grey">
+                                    Non-Compliant
+                                </td>
+                            </tr>
+                            @{
+                                foreach (var row in IndexModel.resultGrid.results) {
+                                    <tr>
+                                        <td>
+                                            @row.response_time
+                                        </td>
+                                        <td>
+                                            @row.percentage
+                                        </td>
+                                        <td>
+                                            @row.compliant
+                                        </td>
+                                        <td>
+                                            @row.noncompliant
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            <tr>
+                                <td style="background-color:grey">
+                                    Total
+                                </td>
+                                <td style="background-color:grey">
+
+                                </td>
+                                <td style="background-color:green">
+                                    @IndexModel.resultGrid.totalCompliant
+                                </td>
+                                <td style="background-color:red">
+                                    @IndexModel.resultGrid.totalNoncompliant
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <form method="post" id="options" name="options">
+                            <input type="hidden" name="selectedOptions" id="selectedOptions" value="" />
+                            <input type="submit" onclick="" value="Populate Data From Tree">
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<script>
+    /*this script makes the list work as a list. it works with the style above to make a smooth effect*/
+    var toggler = document.getElementsByClassName("caret");
+    var i;
+
+    for (i = 0; i < toggler.length; i++) {
+        toggler[i].addEventListener("click", function () {
+            this.parentElement.querySelector(".nested").classList.toggle("active");
+            this.classList.toggle("caret-down");
+        });
+    }
+</script>

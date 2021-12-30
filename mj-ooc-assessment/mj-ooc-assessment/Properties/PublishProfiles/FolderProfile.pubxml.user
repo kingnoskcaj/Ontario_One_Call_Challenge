@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>D:\Users\Awesome\Documents\repos\mj-ooc-assessment\mj-ooc-assessment\bin\Release\net6.0\publish\</_PublishTargetUrl>
+    <History>True|2021-12-30T07:14:25.6261349Z;True|2021-12-30T02:13:59.2090235-05:00;True|2021-12-30T02:08:36.5281522-05:00;True|2021-12-30T02:08:26.6179061-05:00;</History>
+  </PropertyGroup>
+</Project>
